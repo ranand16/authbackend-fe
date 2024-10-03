@@ -65,53 +65,80 @@ const ProductList = ({ products }) => {
         </div>
     );
 };
-
-// Styles object
 const styles = {
     productGrid: {
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-        gap: "20px",
-        padding: "20px",
+        gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+        gap: "24px",
+        padding: "30px",
+        fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif',
+        justifyContent: "center",
     },
     productCard: {
-        border: "1px solid #ccc",
-        borderRadius: "8px",
+        border: "1px solid #e0e0e0",
+        borderRadius: "12px",
         overflow: "hidden",
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+        boxShadow: "0 6px 12px rgba(0, 0, 0, 0.08)",
+        transition: "transform 0.3s ease, box-shadow 0.3s ease",
         textAlign: "center",
+        backgroundColor: "#ffffff",
+    },
+    productCardHover: {
+        transform: "scale(1.03)",
+        boxShadow: "0 8px 16px rgba(0, 0, 0, 0.15)",
     },
     productImage: {
         width: "100%",
         height: "auto",
+        borderBottom: "1px solid #e0e0e0",
     },
     productInfo: {
-        padding: "10px",
+        padding: "15px",
+        color: "#333",
+        fontSize: "1rem",
+        fontWeight: "500",
     },
     quantityContainer: {
-        marginTop: "10px",
+        marginTop: "12px",
         display: "flex",
-        alignItems: "flex-end",
+        alignItems: "center",
         justifyContent: "center",
+        gap: "10px",
     },
     quantityInput: {
-        width: "50px",
-        marginLeft: "10px",
+        width: "60px",
+        padding: "8px",
+        borderRadius: "8px",
+        border: "1px solid #ddd",
+        fontSize: "1rem",
+        textAlign: "center",
+        transition: "border-color 0.3s ease, box-shadow 0.3s ease",
+    },
+    quantityInputFocus: {
+        borderColor: "#007bff",
+        boxShadow: "0 0 5px rgba(0, 123, 255, 0.2)",
     },
     addToCartButton: {
-        marginTop: "10px",
-        padding: "8px 12px",
+        marginTop: "12px",
+        padding: "10px 15px",
+        fontSize: "1.1rem",
         backgroundColor: "#28a745",
         color: "#fff",
         border: "none",
-        borderRadius: "5px",
+        borderRadius: "8px",
         cursor: "pointer",
+        transition: "background-color 0.3s ease, transform 0.2s ease",
+        boxShadow: "0 4px 12px rgba(40, 167, 69, 0.3)",
+    },
+    addToCartButtonHover: {
+        backgroundColor: "#218838",
+        transform: "translateY(-2px)",
     },
     disabledButton: {
-        backgroundColor: "#c0c0c0", // Gray color for disabled button
-        color: "#666666", // Lighter text color for disabled state
-        cursor: "not-allowed", // Change cursor to not-allowed
-        border: "1px solid #c0c0c0", // Add border to disabled button
+        backgroundColor: "#e0e0e0",
+        color: "#a0a0a0",
+        cursor: "not-allowed",
+        border: "1px solid #e0e0e0",
     },
 };
 

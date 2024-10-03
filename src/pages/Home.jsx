@@ -4,6 +4,7 @@ import axios from "axios";
 import React, { createRef } from "react";
 import { useStore } from "../hooks/useStore";
 import { useNavigate } from "react-router-dom";
+import AuthForms from "../components/AuthHome";
 const Home = () => {
     const { jwt, setJwt, setUserData } = useStore((s) => s);
     const nav = useNavigate();
@@ -74,20 +75,14 @@ const Home = () => {
 
     return (
         <section>
-            <h2>SIGNUP</h2>
-            <Singup
+            <AuthForms
                 signup={signup}
                 signupusername={signupusername}
                 signuppass={signuppass}
-            />
-
-            <h2>LOGIN</h2>
-            <Signin
                 login={login}
                 signinusername={signinusername}
                 signinpass={signinpass}
             />
-            {jwt}
         </section>
     );
 };
