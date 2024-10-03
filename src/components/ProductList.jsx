@@ -1,25 +1,36 @@
-import React, { createRef } from "react";
+import React, { useRef } from "react";
 import { useCartStore } from "../hooks/cartStore";
 
+// Custom hook for managing product refs
+const useProductRefs = (products) => {
+    const quantityRefs = useRef(
+        products.reduce((acc, product) => {
+            acc[product.id] = React.createRef();
+            return acc;
+        }, {})
+    );
+
+    const getQuantity = (productId) => {
+        const ref = quantityRefs.current[productId];
+        return ref?.current?.value ? Number(ref.current.value) : 0;
+    };
+
+    return { quantityRefs, getQuantity };
+};
+
 const ProductList = ({ products }) => {
-    const addToCart = useCartStore((state) => state.addToCart); // Access addToCart action from zustand
+    const addToCart = useCartStore((state) => state.addToCart); // Access zustand store action
+    const { quantityRefs, getQuantity } = useProductRefs(products); // Use custom hook
 
-    // Create refs for each product's quantity input
-    const quantityRefs = products.reduce((acc, product) => {
-        acc[product.id] = createRef();
-        return acc;
-    }, {});
-
-    // Handle the add to cart action with quantity check
     const handleAddToCart = async (product) => {
-        const quantity = Number(quantityRefs[product.id].current.value);
+        const quantity = getQuantity(product.id); // Get quantity from custom hook
 
         if (quantity === 0) {
             alert(
                 `Cannot add "${product.id}" to cart. Quantity cannot be zero.`
             );
         } else {
-            await addToCart({ ...product, quantity }); // Add product to cart and call API
+            await addToCart({ ...product, quantity }); // Call addToCart with product details
         }
     };
 
@@ -46,12 +57,11 @@ const ProductList = ({ products }) => {
                                     type="number"
                                     id={`quantity-${product.id}`}
                                     defaultValue="0"
-                                    ref={quantityRefs[product.id]}
-                                    min="0" // Set minimum to 0
+                                    ref={quantityRefs.current[product.id]} // Use ref from hook
+                                    min="0"
                                     style={styles.quantityInput}
                                 />
                             </div>
-                            {/* Add to Cart button */}
                             <button
                                 onClick={() => handleAddToCart(product)}
                                 style={styles.addToCartButton}
@@ -65,6 +75,8 @@ const ProductList = ({ products }) => {
         </div>
     );
 };
+
+// Styles with improved hover effects and transitions
 const styles = {
     productGrid: {
         display: "grid",

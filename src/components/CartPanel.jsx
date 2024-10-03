@@ -1,21 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { useCartStore } from "../hooks/cartStore";
 import { useStore } from "../hooks/useStore";
 
 const CartPanel = () => {
-    const { jwt } = useStore((s) => s);
+    const { jwt } = useStore((state) => state);
     const { cartId, products, updateQuantity, removeFromCart, clearCart } =
         useCartStore((state) => state);
-    const [total, setTotal] = useState(0);
     const [checkoutMsg, setCheckoutMsg] = useState("");
-    useEffect(() => {
-        // Calculate total price
-        const calculatedTotal = products.reduce(
+
+    // Memoize total calculation to avoid unnecessary re-renders
+    const total = useMemo(() => {
+        return products.reduce(
             (acc, product) => acc + product.cost * product.quantity,
             0
         );
-        setTotal(calculatedTotal);
     }, [products]);
 
     const handleCheckout = async () => {
@@ -26,16 +25,16 @@ const CartPanel = () => {
                 {
                     headers: {
                         "Access-Control-Allow-Origin": "*",
-                        "Content-type": "Application/json",
+                        "Content-Type": "application/json",
                         Authorization: `Bearer ${jwt}`,
                     },
                 }
             );
             console.log("Checkout successful", response.data);
-            clearCart(); // Clear the cart after successful checkout
-            setCheckoutMsg("Products added to cart successfully!");
+            clearCart(); // Clear cart after successful checkout
+            setCheckoutMsg("Checkout successful!");
         } catch (error) {
-            setCheckoutMsg("Products were not added to cart. Try again later!");
+            setCheckoutMsg("Checkout failed. Please try again.");
             console.error("Checkout failed", error);
         } finally {
             setTimeout(() => {
@@ -104,12 +103,15 @@ const CartPanel = () => {
                         >
                             Checkout
                         </button>
+                        {checkoutMsg && <p>{checkoutMsg}</p>}
                     </div>
                 </div>
             )}
         </div>
     );
 };
+
+// Styles optimized for consistent UI and responsive design
 const styles = {
     sidePanel: {
         position: "fixed",
@@ -121,8 +123,8 @@ const styles = {
         padding: "25px",
         borderLeft: "2px solid #e0e0e0",
         boxShadow: "0 2px 12px rgba(0, 0, 0, 0.15)",
-        zIndex: 1000, // Ensure it's on top
-        overflowY: "auto", // Scrollable for long lists
+        zIndex: 1000,
+        overflowY: "auto",
         fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif',
     },
     productItem: {
@@ -136,8 +138,8 @@ const styles = {
         width: "60px",
         height: "60px",
         marginRight: "15px",
-        borderRadius: "8px", // Rounded edges for images
-        objectFit: "cover", // Ensures the image covers the entire space
+        borderRadius: "8px",
+        objectFit: "cover",
     },
     productDetails: {
         flex: 1,
@@ -160,10 +162,6 @@ const styles = {
         fontSize: "1rem",
         transition: "border-color 0.3s ease, box-shadow 0.3s ease",
     },
-    quantityInputFocus: {
-        borderColor: "#007bff",
-        boxShadow: "0 0 5px rgba(0, 123, 255, 0.2)",
-    },
     removeButton: {
         backgroundColor: "#e74c3c",
         color: "#fff",
@@ -173,10 +171,6 @@ const styles = {
         cursor: "pointer",
         transition: "background-color 0.3s ease, transform 0.2s ease",
         boxShadow: "0 3px 8px rgba(231, 76, 60, 0.3)",
-    },
-    removeButtonHover: {
-        backgroundColor: "#c0392b",
-        transform: "translateY(-2px)",
     },
     cartActions: {
         marginTop: "30px",
@@ -193,10 +187,6 @@ const styles = {
         transition: "background-color 0.3s ease, transform 0.2s ease",
         boxShadow: "0 3px 8px rgba(243, 156, 18, 0.3)",
     },
-    clearButtonHover: {
-        backgroundColor: "#e67e22",
-        transform: "translateY(-2px)",
-    },
     checkoutButton: {
         backgroundColor: "#2ecc71",
         color: "#fff",
@@ -209,10 +199,6 @@ const styles = {
         marginTop: "15px",
         transition: "background-color 0.3s ease, transform 0.2s ease",
         boxShadow: "0 3px 8px rgba(46, 204, 113, 0.3)",
-    },
-    checkoutButtonHover: {
-        backgroundColor: "#27ae60",
-        transform: "translateY(-2px)",
     },
 };
 

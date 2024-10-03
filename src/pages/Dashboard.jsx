@@ -1,28 +1,32 @@
-import React, { createRef, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useStore } from "../hooks/useStore";
 import axios from "axios";
 import ProductList from "../components/ProductList";
 import CartPanel from "../components/CartPanel";
 
+const API_URL = "http://localhost:5200/v1/productlist"; // API URL constant
+
 const Dashboard = () => {
     const { jwt, products, setProducts } = useStore((s) => s);
+
     useEffect(() => {
-        async function getProducts() {
-            const products = await axios.get(
-                "http://localhost:5200/v1/productlist",
-                {
+        const fetchProducts = async () => {
+            try {
+                const { data } = await axios.get(API_URL, {
                     headers: {
                         "Access-Control-Allow-Origin": "*",
                         "Content-type": "Application/json",
                         Authorization: `Bearer ${jwt}`,
                     },
-                }
-            );
-            console.log(products["data"]["products"]);
-            setProducts(products["data"]["products"]);
-        }
-        getProducts();
-    }, []);
+                });
+                setProducts(data.products); // Destructure directly
+            } catch (error) {
+                console.error("Error fetching products:", error);
+            }
+        };
+
+        fetchProducts(); // Directly call the async function
+    }, [jwt, setProducts]); // Dependency array
 
     return (
         <section>
@@ -51,34 +55,34 @@ export default Dashboard;
 const styles = {
     dashboardContainer: {
         padding: "40px",
-        backgroundColor: "#f5f7fa", // Soft background for readability
+        backgroundColor: "#f5f7fa", // Soft background
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif',
         justifyContent: "center",
+        fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif',
     },
     heading: {
         fontSize: "2.5rem",
         color: "#333",
         marginBottom: "20px",
         textAlign: "center",
-        fontWeight: "700", // Bold and clear
+        fontWeight: "700",
         letterSpacing: "1px",
-        textTransform: "uppercase", // Make the heading more prominent
+        textTransform: "uppercase", // Prominent heading
     },
     description: {
         fontSize: "1.2rem",
         color: "#555",
         lineHeight: "1.8",
-        maxWidth: "600px", // Limits the width for better readability
+        maxWidth: "600px", // Limit text width for readability
         textAlign: "center",
         marginBottom: "15px",
-        padding: "0 20px", // Padding for mobile responsiveness
+        padding: "0 20px", // Mobile-friendly padding
     },
     callToAction: {
         fontSize: "1.1rem",
-        color: "#2ecc71", // Add color for emphasis
+        color: "#2ecc71", // Emphasized call to action
         fontWeight: "500",
         textAlign: "center",
     },
