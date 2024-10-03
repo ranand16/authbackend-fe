@@ -36,7 +36,9 @@ const Home = () => {
             const jwt = respData["jwt"]["ujwt"];
             setJwt(jwt);
             setUserData(userData);
-            nav("/dashboard");
+            setTimeout(() => {
+                nav("/dashboard");
+            }, 0);
         } catch (e) {
             console.error(e);
         }
